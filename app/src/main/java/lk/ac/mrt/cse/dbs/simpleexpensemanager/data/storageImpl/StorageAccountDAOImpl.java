@@ -3,14 +3,10 @@ package lk.ac.mrt.cse.dbs.simpleexpensemanager.data.storageImpl;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.AccountDAO;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 
@@ -65,14 +61,16 @@ public class StorageAccountDAOImpl implements AccountDAO {
         db = helper.getReadableDatabase();
         Cursor results = db.rawQuery("SELECT * FROM " +
                 DatabaseHelper.ACCOUNT_TABLE + " WHERE " + DatabaseHelper.ACCOUNT_NUM +
-                " = ?", new String[] {accountNo});
+                " = ?", new String[]{accountNo});
 
         if (results.getCount() > 0) {
-            Account account = new Account(results.getString(0),
-                    results.getString(2),
-                    results.getString(1), results.getDouble(3));
-            System.out.println(results.getString(0));
-            return account;
+            while (results.moveToNext()) {
+                Account account = new Account(results.getString(0),
+                        results.getString(2),
+                        results.getString(1), results.getDouble(3));
+                System.out.println(results.getString(0));
+                return account;
+            }
         }
         return null;
     }
@@ -101,7 +99,7 @@ public class StorageAccountDAOImpl implements AccountDAO {
         db = helper.getWritableDatabase();
 
         db.delete(DatabaseHelper.ACCOUNT_TABLE, DatabaseHelper.ACCOUNT_NUM + "= ?",
-                new String[] {accountNo});
+                new String[]{accountNo});
 
     }
 
@@ -112,7 +110,7 @@ public class StorageAccountDAOImpl implements AccountDAO {
         Account account = getAccount(accountNo);
         if (account != null) {
             double newAmount = account.getBalance();
-            switch (expenseType){
+            switch (expenseType) {
                 case INCOME:
                     newAmount += amount;
                     break;
@@ -124,7 +122,7 @@ public class StorageAccountDAOImpl implements AccountDAO {
             values.put(DatabaseHelper.BALANCE, newAmount);
 
             db.update(DatabaseHelper.ACCOUNT_TABLE, values, DatabaseHelper.ACCOUNT_NUM + " = ?",
-                    new String[] {account.getAccountNo()});
+                    new String[]{account.getAccountNo()});
         }
 
     }

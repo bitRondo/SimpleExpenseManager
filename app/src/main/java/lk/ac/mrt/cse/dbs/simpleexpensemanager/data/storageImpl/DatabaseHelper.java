@@ -3,10 +3,9 @@ package lk.ac.mrt.cse.dbs.simpleexpensemanager.data.storageImpl;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "170669X";
+    private static final String DATABASE_NAME = "170669Xnew";
 
     //Table names
     public static final String ACCOUNT_TABLE = "accountTable",
